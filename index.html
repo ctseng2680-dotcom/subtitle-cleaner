@@ -373,7 +373,7 @@ margin-top: 8px;
   </div>
   <div style="display:flex;gap:6px;margin-top:10px">
     <button class="btn-sm" onclick="saveRules()" style="flex:1">💾 儲存規則</button>
-    <button class="btn-sm" onclick="document.getElementById('rulesFile').click()" style="flex:1">📂 載入規則</button>
+    <button class="btn-sm" onclick="document.getElementById('rulesFile').click()" style="flex:1">📂 匯入規則</button>
     <input type="file" id="rulesFile" accept=".json" style="display:none" onchange="loadRules(event)">
   </div>
 </div>
@@ -381,7 +381,6 @@ margin-top: 8px;
 
 <div class="run-row">
   <button class="btn-primary" onclick="runProcess()">▶ 開始清理</button>
-  <button class="btn-sm" onclick="clearAll()">清除</button>
 </div>
 ```
 
@@ -393,8 +392,7 @@ margin-top: 8px;
     <div class="toolbar">
       <button class="btn-sm" onclick="filterView('all')" id="f_all">全部</button>
       <button class="btn-sm" onclick="filterView('flagged')" id="f_flagged">⚑ 待審閱</button>
-      <button class="btn-sm" onclick="filterView('deleted')" id="f_deleted">✕ 已刪除</button>
-      <button class="btn-sm" onclick="deleteAllFlagged()">一鍵刪除待審</button>
+      <button class="btn-sm" onclick="filterView('deleted')" id="f_deleted">✕ 已刪除</button
       <div class="stats" id="stats">尚未處理</div>
       <div style="position:relative;display:inline-block" id="exportWrap">
         <button class="btn-success" onclick="toggleExportMenu()">匯出 ▾</button>
@@ -402,6 +400,7 @@ margin-top: 8px;
           <div onclick="exportClean()" style="padding:10px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid #2e2e38" onmouseover="this.style.background='#222228'" onmouseout="this.style.background=''">📄 匯出清理後文字</div>
           <div onclick="exportDiff()" style="padding:10px 14px;cursor:pointer;font-size:13px" onmouseover="this.style.background='#222228'" onmouseout="this.style.background=''">📊 匯出修改前後對照</div>
         </div>
+        <button class="btn-sm" onclick="clearAll()">清除</button>
       </div>
     </div>
     <div class="lines-container" id="linesContainer">
