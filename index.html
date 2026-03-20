@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>字幕清理工具</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+
+:root {
+–bg: #0f0f11;
+–surface: #18181c;
+–surface2: #222228;
+–border: #2e2e38;
+–accent: #7c6af7;
+–accent2: #a78bfa;
+–warn: #f59e0b;
+–danger: #ef4444;
+–success: #10b981;
+–text: #e8e8f0;
+–muted: #6b6b80;
+–radius: 8px;
+}
+
+- { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+font-family: ‘Noto Sans TC’, sans-serif;
+background: var(–bg);
+color: var(–text);
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+}
+
+header {
+padding: 20px 32px;
+border-bottom: 1px solid var(–border);
+display: flex;
+align-items: center;
+gap: 12px;
+background: var(–surface);
+}
+
+header .logo {
+width: 32px; height: 32px;
+background: var(–accent);
+border-radius: 8px;
+display: flex; align-items: center; justify-content: center;
+font-size: 18px;
+}
+
+header h1 { font-size: 18px; font-weight: 600; letter-spacing: -0.3px; }
+header p { font-size: 13px; color: var(–muted); margin-left: auto; }
+
+.main {
+display: grid;
+grid-template-columns: 320px 1fr;
+gap: 0;
+flex: 1;
+overflow: hidden;
+}
+
+@media (max-width: 700px) {
+.main {
+grid-template-columns: 1fr;
+grid-template-rows: auto 1fr;
+overflow: visible;
+height: auto;
+}
+.panel-left {
+border-right: none;
+border-bottom: 1px solid var(–border);
+overflow-y: visible;
+max-height: none;
+}
+.panel-right {
+height: 80vh;
+}
+header p { display: none; }
+}
+
+/* ── Left panel ── */
+.panel-left {
+border-right: 1px solid var(–border);
+display: flex;
+flex-direction: column;
+overflow-y: auto;
+background: var(–surface);
+}
+
+.section {
+padding: 20px;
+border-bottom: 1px solid var(–border);
+}
+
+.section-title {
+font-size: 11px;
+font-weight: 600;
+letter-spacing: 1.2px;
+text-transform: uppercase;
+color: var(–muted);
+margin-bottom: 14px;
+}
+
+textarea {
+width: 100%;
+background: var(–surface2);
+border: 1px solid var(–border);
+border-radius: var(–radius);
+color: var(–text);
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 12px;
+padding: 10px;
+resize: vertical;
+outline: none;
+transition: border-color 0.2s;
+line-height: 1.6;
+}
+textarea:focus { border-color: var(–accent); }
+textarea::placeholder { color: var(–muted); }
+
+label {
+display: flex;
+align-items: center;
+gap: 8px;
+font-size: 13px;
+color: var(–text);
+cursor: pointer;
+margin-bottom: 10px;
+user-select: none;
+}
+label input[type=checkbox] { accent-color: var(–accent); width: 15px; height: 15px; }
+
+.rule-item {
+background: var(–surface2);
+border: 1px solid var(–border);
+border-radius: var(–radius);
+padding: 10px 12px;
+margin-bottom: 8px;
+display: flex;
+align-items: center;
+gap: 8px;
+font-size: 12px;
+}
+.rule-item span { flex: 1; }
+.rule-item .del { color: var(–muted); cursor: pointer; font-size: 16px; line-height: 1; }
+.rule-item .del:hover { color: var(–danger); }
+.rule-row { display: flex; gap: 4px; margin-top: 8px; align-items: center; }
+.rule-row input {
+flex: 1;
+min-width: 0;
+background: var(–surface2);
+border: 1px solid var(–border);
+border-radius: var(–radius);
+color: var(–text);
+padding: 6px 8px;
+font-size: 11px;
+outline: none;
+}
+.rule-row input:focus { border-color: var(–accent); }
+
+button {
+font-family: ‘Noto Sans TC’, sans-serif;
+font-size: 13px;
+font-weight: 500;
+cursor: pointer;
+border: none;
+border-radius: var(–radius);
+padding: 8px 16px;
+transition: opacity 0.15s, transform 0.1s;
+}
+button:active { transform: scale(0.97); }
+button:hover { opacity: 0.85; }
+
+.btn-primary { background: var(–accent); color: #fff; }
+.btn-sm { padding: 5px 10px; font-size: 12px; background: var(–surface2); color: var(–text); border: 1px solid var(–border); }
+.btn-success { background: var(–success); color: #fff; }
+.btn-warn { background: var(–warn); color: #000; }
+
+.run-row {
+padding: 16px 20px;
+display: flex;
+gap: 8px;
+background: var(–surface);
+border-top: 1px solid var(–border);
+flex-wrap: wrap;
+}
+
+/* ── Right panel ── */
+.panel-right {
+display: flex;
+flex-direction: column;
+overflow: hidden;
+}
+
+.toolbar {
+padding: 12px 20px;
+background: var(–surface);
+border-bottom: 1px solid var(–border);
+display: flex;
+align-items: center;
+gap: 10px;
+flex-wrap: wrap;
+}
+
+.stats { font-size: 12px; color: var(–muted); margin-left: auto; }
+.stats span { color: var(–text); font-weight: 600; }
+
+.lines-container {
+flex: 1;
+overflow-y: auto;
+padding: 16px 20px;
+}
+
+.line-item {
+display: flex;
+gap: 10px;
+align-items: flex-start;
+padding: 10px 12px;
+border-radius: var(–radius);
+margin-bottom: 6px;
+border: 1px solid transparent;
+transition: border-color 0.15s, background 0.15s;
+position: relative;
+}
+.line-item:hover { border-color: var(–border); background: var(–surface); }
+
+.line-item.flagged {
+background: rgba(245,158,11,0.07);
+border-color: rgba(245,158,11,0.3);
+}
+.line-item.deleted {
+background: rgba(239,68,68,0.05);
+border-color: rgba(239,68,68,0.2);
+opacity: 0.5;
+}
+.line-item.deleted .line-text { text-decoration: line-through; color: var(–muted); }
+
+.line-num {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 11px;
+color: var(–muted);
+min-width: 30px;
+padding-top: 2px;
+}
+
+.line-text {
+flex: 1;
+font-size: 14px;
+line-height: 1.6;
+word-break: break-all;
+}
+
+.flag-badge {
+font-size: 10px;
+font-weight: 600;
+padding: 2px 6px;
+border-radius: 4px;
+background: rgba(245,158,11,0.2);
+color: var(–warn);
+letter-spacing: 0.5px;
+white-space: nowrap;
+}
+
+.line-actions {
+display: flex;
+gap: 4px;
+flex-shrink: 0;
+padding-top: 2px;
+}
+.act-btn {
+font-size: 16px;
+width: 28px; height: 28px;
+display: flex; align-items: center; justify-content: center;
+border-radius: 6px;
+cursor: pointer;
+border: 1px solid var(–border);
+background: var(–surface2);
+transition: background 0.15s;
+}
+.act-btn:hover { background: var(–border); }
+
+.edit-input {
+flex: 1;
+background: var(–surface2);
+border: 1px solid var(–accent);
+border-radius: 6px;
+color: var(–text);
+font-size: 14px;
+padding: 4px 8px;
+outline: none;
+}
+
+.empty-state {
+text-align: center;
+padding: 80px 20px;
+color: var(–muted);
+}
+.empty-state .icon { font-size: 48px; margin-bottom: 16px; }
+.empty-state p { font-size: 14px; line-height: 1.8; }
+
+.ai-loading {
+display: flex; align-items: center; gap: 8px;
+font-size: 13px; color: var(–accent2);
+padding: 8px 12px;
+background: rgba(124,106,247,0.08);
+border-radius: var(–radius);
+border: 1px solid rgba(124,106,247,0.2);
+}
+.spinner {
+width: 14px; height: 14px;
+border: 2px solid rgba(124,106,247,0.3);
+border-top-color: var(–accent);
+border-radius: 50%;
+animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.diff-view { font-size: 11px; color: var(–muted); margin-top: 2px; }
+.diff-view del { color: var(–danger); text-decoration: line-through; }
+.diff-view ins { color: var(–success); text-decoration: none; }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(–border); border-radius: 3px; }
+
+.notice {
+padding: 8px 12px;
+font-size: 12px;
+border-radius: var(–radius);
+margin-top: 8px;
+}
+.notice.info { background: rgba(124,106,247,0.1); color: var(–accent2); border: 1px solid rgba(124,106,247,0.2); }
+.notice.warn { background: rgba(245,158,11,0.1); color: var(–warn); border: 1px solid rgba(245,158,11,0.2); }
+</style>
+
+</head>
+<body>
+
+<header>
+  <div class="logo">✂</div>
+  <h1>字幕清理工具</h1>
+  <p>貼上文字 → 自動清理 → 手動審閱 → 匯出</p>
+</header>
+
+<div class="main">
+  <!-- LEFT PANEL -->
+  <div class="panel-left">
+
+```
+<div class="section">
+  <div class="section-title">輸入文字</div>
+  <textarea id="inputText" rows="7" placeholder="貼上字幕文字，每行一句。&#10;也支援 SRT 格式。"></textarea>
+  <div class="notice info" style="margin-top:8px">支援純文字（每行一句）或 SRT 格式</div>
+</div>
+
+<div class="section">
+  <div class="section-title">自動規則</div>
+  <label><input type="checkbox" id="r_particles" checked>拿掉語助詞（嗯、啊、哦、呢⋯）</label>
+  <label><input type="checkbox" id="r_understand" checked>標記「確認理解」類語句</label>
+  <label><input type="checkbox" id="r_typo" checked>修正常見錯別字</label>
+  <label><input type="checkbox" id="r_punct" checked>統一標點符號</label>
+  <label><input type="checkbox" id="r_repeat" checked>移除重複詞語（如「那個那個」）</label>
+</div>
+
+<div class="section">
+  <div class="section-title">自訂取代規則</div>
+  <div id="customRules"></div>
+  <div class="rule-row">
+    <input id="ruleFrom" placeholder="原文">
+    <input id="ruleTo" placeholder="取代為">
+    <button class="btn-sm" onclick="addRule()">＋</button>
+  </div>
+  <div style="display:flex;gap:6px;margin-top:10px">
+    <button class="btn-sm" onclick="saveRules()" style="flex:1">💾 儲存規則</button>
+    <button class="btn-sm" onclick="document.getElementById('rulesFile').click()" style="flex:1">📂 載入規則</button>
+    <input type="file" id="rulesFile" accept=".json" style="display:none" onchange="loadRules(event)">
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">AI 智慧分析（選填）</div>
+  <p style="font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.6">使用 Claude 分析語義模糊、確認理解類句子，比規則更準確。無需填 API Key。</p>
+  <label><input type="checkbox" id="useAI">啟用 AI 輔助標記</label>
+</div>
+
+<div class="run-row">
+  <button class="btn-primary" onclick="runProcess()">▶ 開始清理</button>
+  <button class="btn-sm" onclick="clearAll()">清除</button>
+</div>
+```
+
+  </div>
+
+  <!-- RIGHT PANEL -->
+
+  <div class="panel-right">
+    <div class="toolbar">
+      <button class="btn-sm" onclick="filterView('all')" id="f_all">全部</button>
+      <button class="btn-sm" onclick="filterView('flagged')" id="f_flagged">⚑ 待審閱</button>
+      <button class="btn-sm" onclick="filterView('deleted')" id="f_deleted">✕ 已刪除</button>
+      <button class="btn-sm" onclick="deleteAllFlagged()">一鍵刪除待審</button>
+      <div class="stats" id="stats">尚未處理</div>
+      <div style="position:relative;display:inline-block" id="exportWrap">
+        <button class="btn-success" onclick="toggleExportMenu()">匯出 ▾</button>
+        <div id="exportMenu" style="display:none;position:absolute;right:0;top:calc(100%+6px);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);min-width:200px;z-index:99;box-shadow:0 8px 24px rgba(0,0,0,0.4);overflow:hidden">
+          <div onclick="exportClean()" style="padding:10px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid var(--border)" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background=''">📄 匯出清理後文字</div>
+          <div onclick="exportDiff()" style="padding:10px 14px;cursor:pointer;font-size:13px" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background=''">📊 匯出修改前後對照</div>
+        </div>
+      </div>
+    </div>
+    <div class="lines-container" id="linesContainer">
+      <div class="empty-state">
+        <div class="icon">✂️</div>
+        <p>在左側貼上字幕文字<br>設定清理規則後按「開始清理」</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Data ──
+let lines = [];        // { id, original, current, deleted, flagged, flagReason, edited }
+let currentFilter = 'all';
+let customRules = [];
+
+// ── Built-in rules ──
+const PARTICLES = /[\s,，]*(嗯+|啊+|哦+|喔+|噢+|唉+|呢|嘛|吧|囉|啦|欸|欸+|哈+|呵+|嗯哼|呃+|額+|那個那個|這個這個)/g;
+const REPEAT_WORD = /(.{1,4})\1{1,}/g;
+
+const TYPOS = [
+  ['的話', '的話'], // placeholder - add real ones below
+  ['在在', '在'],
+  ['是是', '是'],
+  ['就就', '就'],
+  ['然後然後', '然後'],
+  ['所以所以', '所以'],
+  ['因為因為', '因為'],
+];
+
+const UNDERSTAND_PATTERNS = [
+  /理解嗎[？?]?/,
+  /了解嗎[？?]?/,
+  /懂[嗎了]?[？?]?$/,
+  /懂我的意思嗎[？?]?/,
+  /知道嗎[？?]?/,
+  /明白嗎[？?]?/,
+  /清楚嗎[？?]?/,
+  /這樣[懂明白清楚][嗎了]?[？?]?/,
+  /有沒有[問題疑問][？?]?/,
+  /OK[？?]?$/i,
+  /ok[嗎了]?[？?]?$/i,
+  /好嗎[？?]?$/,
+  /對不對[？?]?$/,
+  /是不是[？?]?$/,
+  /對吧[？?]?$/,
+];
+
+// SRT parser
+function parseSRT(text) {
+  const blocks = text.trim().split(/\n\n+/);
+  const result = [];
+  for (const b of blocks) {
+    const lines = b.split('\n');
+    if (lines.length >= 3 && /^\d+$/.test(lines[0].trim()) && lines[1].includes('-->')) {
+      result.push(lines.slice(2).join(' ').trim());
+    } else {
+      // not SRT block, treat as plain
+      result.push(...b.split('\n').map(l => l.trim()).filter(Boolean));
+      break;
+    }
+  }
+  return result;
+}
+
+function parseInput(text) {
+  // detect SRT
+  if (/^\d+\s*\n\d{2}:\d{2}/.test(text.trim())) {
+    return parseSRT(text);
+  }
+  return text.split('\n').map(l => l.trim()).filter(Boolean);
+}
+
+// ── Rule application ──
+function applyRules(text) {
+  let t = text;
+
+  if (document.getElementById('r_punct').checked) {
+    t = t.replace(/。{2,}/g, '。').replace(/？{2,}/g, '？').replace(/！{2,}/g, '！');
+    t = t.replace(/\?/g, '？').replace(/!/g, '！');
+  }
+
+  if (document.getElementById('r_repeat').checked) {
+    t = t.replace(/(然後){2,}/g, '然後')
+         .replace(/(所以){2,}/g, '所以')
+         .replace(/(就是){2,}/g, '就是')
+         .replace(/(那個){2,}/g, '那個')
+         .replace(/(這個){2,}/g, '這個')
+         .replace(/(因為){2,}/g, '因為')
+         .replace(/(其實){2,}/g, '其實');
+  }
+
+  if (document.getElementById('r_typo').checked) {
+    for (const [from, to] of TYPOS) {
+      t = t.replaceAll(from, to);
+    }
+    // apply custom rules
+    for (const r of customRules) {
+      t = t.replaceAll(r.from, r.to);
+    }
+  } else {
+    // still apply custom rules
+    for (const r of customRules) {
+      t = t.replaceAll(r.from, r.to);
+    }
+  }
+
+  if (document.getElementById('r_particles').checked) {
+    t = t.replace(/^[\s,，]*(嗯+|啊+|哦+|喔+|噢+|欸+|呃+|額+)[，,\s]*/g, '');
+    t = t.replace(/[，,\s]*(嗯+|啊+|哦+|喔+|噢+|欸+|呃+|額+)[，,\s]*$/g, '');
+    t = t.replace(/[，,\s]*(嗯+|啊+|哦+|喔+|噢+|欸+|呃+|額+)[，,\s]+/g, '，');
+    t = t.replace(/([。？！，])([嗎呢吧囉啦])/g, '$1');
+    t = t.replace(/([^。？！])([嗎呢吧囉啦])([。？！])/g, '$1$3');
+  }
+
+  t = t.replace(/\s+/g, ' ').trim();
+  return t;
+}
+
+function checkUnderstand(text) {
+  if (!document.getElementById('r_understand').checked) return false;
+  return UNDERSTAND_PATTERNS.some(p => p.test(text));
+}
+
+// ── Custom rules ──
+function addRule() {
+  const from = document.getElementById('ruleFrom').value.trim();
+  const to = document.getElementById('ruleTo').value.trim();
+  if (!from) return;
+  customRules.push({ from, to });
+  document.getElementById('ruleFrom').value = '';
+  document.getElementById('ruleTo').value = '';
+  renderCustomRules();
+}
+
+function renderCustomRules() {
+  const el = document.getElementById('customRules');
+  el.innerHTML = customRules.map((r, i) => `
+    <div class="rule-item">
+      <span>「${r.from}」→ 「${r.to || '<em>刪除</em>'}」</span>
+      <div class="del" onclick="removeRule(${i})">×</div>
+    </div>
+  `).join('');
+}
+
+function removeRule(i) {
+  customRules.splice(i, 1);
+  renderCustomRules();
+}
+
+// ── Process ──
+async function runProcess() {
+  const raw = document.getElementById('inputText').value;
+  if (!raw.trim()) return;
+
+  const rawLines = parseInput(raw);
+  lines = rawLines.map((l, i) => {
+    const current = applyRules(l);
+    const flagged = checkUnderstand(current);
+    return {
+      id: i,
+      original: l,
+      current,
+      deleted: false,
+      flagged,
+      flagReason: flagged ? '確認理解' : '',
+      edited: l !== current
+    };
+  });
+
+  renderLines();
+
+  if (document.getElementById('useAI').checked) {
+    await runAI();
+  }
+}
+
+async function runAI() {
+  const container = document.getElementById('linesContainer');
+  const loadDiv = document.createElement('div');
+  loadDiv.className = 'ai-loading';
+  loadDiv.innerHTML = '<div class="spinner"></div> AI 正在分析語句中⋯';
+  container.prepend(loadDiv);
+
+  const toAnalyze = lines.filter(l => !l.deleted && !l.flagged).map(l => `${l.id}|||${l.current}`).join('\n');
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: `你是字幕品質審閱助理。請分析以下字幕行，找出「確認理解類」句子，例如：理解嗎、了解嗎、懂嗎、知道嗎、明白嗎、這樣OK嗎、有問題嗎，或其他功能為「確認聽眾是否理解」的句子。
+每行格式：行號|||文字
+請只回傳需要標記的行號，以逗號分隔，例如：2,5,8
+如果沒有需要標記的，回傳空字串。`,
+        messages: [{ role: 'user', content: toAnalyze }]
+      })
+    });
+
+    const data = await resp.json();
+    const text = data.content?.[0]?.text?.trim() || '';
+    const flaggedIds = text.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n));
+
+    for (const id of flaggedIds) {
+      const l = lines.find(x => x.id === id);
+      if (l) { l.flagged = true; l.flagReason = '確認理解（AI）'; }
+    }
+  } catch (e) {
+    console.warn('AI 分析失敗', e);
+  }
+
+  loadDiv.remove();
+  renderLines();
+}
+
+// ── Render ──
+function renderLines() {
+  const container = document.getElementById('linesContainer');
+  const visible = lines.filter(l => {
+    if (currentFilter === 'flagged') return l.flagged && !l.deleted;
+    if (currentFilter === 'deleted') return l.deleted;
+    return true;
+  });
+
+  if (visible.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="icon">✅</div><p>沒有符合條件的行</p></div>';
+    updateStats();
+    return;
+  }
+
+  container.innerHTML = visible.map(l => renderLine(l)).join('');
+  updateStats();
+}
+
+function renderLine(l) {
+  const cls = [l.deleted ? 'deleted' : '', l.flagged && !l.deleted ? 'flagged' : ''].filter(Boolean).join(' ');
+  const diff = l.original !== l.current && !l.deleted
+    ? `<div class="diff-view"><del>${escHtml(l.original)}</del> → <ins>${escHtml(l.current)}</ins></div>`
+    : '';
+  const badge = l.flagged && !l.deleted ? `<span class="flag-badge">⚑ ${escHtml(l.flagReason)}</span>` : '';
+
+  return `<div class="line-item ${cls}" id="li_${l.id}">
+    <div class="line-num">${l.id + 1}</div>
+    <div style="flex:1;min-width:0">
+      <div class="line-text">${escHtml(l.current)}</div>
+      ${diff}
+    </div>
+    ${badge}
+    <div class="line-actions">
+      ${!l.deleted ? `<div class="act-btn" title="編輯" onclick="editLine(${l.id})">✏️</div>` : ''}
+      <div class="act-btn" title="${l.deleted ? '還原' : '刪除'}" onclick="toggleDelete(${l.id})">${l.deleted ? '↩' : '✕'}</div>
+    </div>
+  </div>`;
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function updateStats() {
+  const total = lines.length;
+  const deleted = lines.filter(l => l.deleted).length;
+  const flagged = lines.filter(l => l.flagged && !l.deleted).length;
+  const edited = lines.filter(l => l.edited && !l.deleted).length;
+  document.getElementById('stats').innerHTML =
+    `共 <span>${total}</span> 行 ／ 待審 <span style="color:var(--warn)">${flagged}</span> ／ 已改 <span style="color:var(--success)">${edited}</span> ／ 刪除 <span style="color:var(--danger)">${deleted}</span>`;
+}
+
+// ── Actions ──
+function toggleDelete(id) {
+  const l = lines.find(x => x.id === id);
+  if (!l) return;
+  l.deleted = !l.deleted;
+  document.getElementById(`li_${id}`).outerHTML = renderLine(l);
+  updateStats();
+}
+
+function editLine(id) {
+  const l = lines.find(x => x.id === id);
+  const el = document.getElementById(`li_${id}`);
+  const textDiv = el.querySelector('.line-text');
+  textDiv.innerHTML = `<input class="edit-input" value="${escHtml(l.current)}" onblur="saveEdit(${id},this)" onkeydown="if(event.key==='Enter')this.blur()">`;
+  textDiv.querySelector('input').focus();
+}
+
+function saveEdit(id, input) {
+  const l = lines.find(x => x.id === id);
+  l.current = input.value.trim();
+  l.edited = l.current !== l.original;
+  l.flagged = checkUnderstand(l.current);
+  document.getElementById(`li_${id}`).outerHTML = renderLine(l);
+  updateStats();
+}
+
+function deleteAllFlagged() {
+  lines.filter(l => l.flagged && !l.deleted).forEach(l => l.deleted = true);
+  renderLines();
+}
+
+function filterView(f) {
+  currentFilter = f;
+  ['all','flagged','deleted'].forEach(x => {
+    document.getElementById('f_'+x).style.background = x === f ? 'var(--accent)' : '';
+    document.getElementById('f_'+x).style.color = x === f ? '#fff' : '';
+  });
+  renderLines();
+}
+
+function exportResult() { exportClean(); }
+
+function toggleExportMenu() {
+  const m = document.getElementById('exportMenu');
+  m.style.display = m.style.display === 'none' ? 'block' : 'none';
+}
+document.addEventListener('click', e => {
+  if (!document.getElementById('exportWrap').contains(e.target))
+    document.getElementById('exportMenu').style.display = 'none';
+});
+
+function exportClean() {
+  document.getElementById('exportMenu').style.display = 'none';
+  const result = lines.filter(l => !l.deleted).map(l => l.current).join('\n');
+  download(result, 'cleaned_subtitle.txt');
+}
+
+function exportDiff() {
+  document.getElementById('exportMenu').style.display = 'none';
+  const changed = lines.filter(l => l.edited || l.deleted);
+  if (!changed.length) { alert('沒有任何修改紀錄可匯出'); return; }
+  const rows = changed.map(l => {
+    const status = l.deleted ? '[刪除]' : '[修改]';
+    return `${status} 第${l.id + 1}行\n  原文：${l.original}\n  修改：${l.deleted ? '（已刪除）' : l.current}\n`;
+  });
+  const header = `字幕修改對照表\n生成時間：${new Date().toLocaleString('zh-TW')}\n共 ${changed.length} 筆修改\n${'─'.repeat(40)}\n\n`;
+  download(header + rows.join('\n'), 'subtitle_diff.txt');
+}
+
+function saveRules() {
+  if (!customRules.length) { alert('目前沒有自訂規則可儲存'); return; }
+  const data = JSON.stringify({ rules: customRules, savedAt: new Date().toISOString() }, null, 2);
+  download(data, 'subtitle_rules.json');
+}
+
+function loadRules(e) {
+  const f = e.target.files[0];
+  if (!f) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if (!data.rules || !Array.isArray(data.rules)) throw new Error();
+      customRules = data.rules;
+      renderCustomRules();
+      alert(`已載入 ${customRules.length} 組規則`);
+    } catch { alert('規則檔案格式錯誤'); }
+  };
+  reader.readAsText(f);
+  e.target.value = '';
+}
+
+function download(text, filename) {
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+}
+
+function clearAll() {
+  lines = [];
+  document.getElementById('inputText').value = '';
+  document.getElementById('linesContainer').innerHTML =
+    '<div class="empty-state"><div class="icon">✂️</div><p>在左側貼上字幕文字<br>設定清理規則後按「開始清理」</p></div>';
+  document.getElementById('stats').textContent = '尚未處理';
+}
+</script>
+
+</body>
+</html>
