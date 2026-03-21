@@ -282,14 +282,15 @@
   .act-btn:hover { background: #2e2e38; }
 
   .edit-input {
-    flex: 1;
+    width: 100%;
     background: #222228;
     border: 1px solid #7c6af7;
     border-radius: 6px;
     color: #e8e8f0;
     font-size: 14px;
-    padding: 4px 8px;
+    padding: 6px 10px;
     outline: none;
+    min-width: 0;
   }
 
   .empty-state {
@@ -709,8 +710,10 @@ function editLine(id) {
   const l = lines.find(x => x.id === id);
   const el = document.getElementById(`li_${id}`);
   const textDiv = el.querySelector('.line-text');
-  textDiv.innerHTML = `<input class="edit-input" value="${escHtml(l.current)}" onblur="saveEdit(${id},this)" onkeydown="if(event.key==='Enter')this.blur()">`;
-  textDiv.querySelector('input').focus();
+  textDiv.innerHTML = `<textarea class="edit-input" rows="3" onblur="saveEdit(${id},this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();this.blur()}">${escHtml(l.current)}</textarea>`;
+  const ta = textDiv.querySelector('textarea');
+  ta.focus();
+  ta.setSelectionRange(ta.value.length, ta.value.length);
 }
 
 function saveEdit(id, input) {
