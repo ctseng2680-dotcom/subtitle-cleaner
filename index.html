@@ -398,7 +398,7 @@
         <div style="position:relative;display:inline-block" id="exportWrap">
           <button class="btn-success" onclick="toggleExportMenu()">匯出 ▾</button>
           <div id="exportMenu" style="display:none;position:absolute;right:0;top:calc(100%+6px);background:#18181c;border:1px solid #2e2e38;border-radius:8px;min-width:200px;z-index:99;box-shadow:0 8px 24px rgba(0,0,0,0.4);overflow:hidden">
-            <div onclick="exportClean()" style="padding:10px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid #2e2e38" onmouseover="this.style.background='#222228'" onmouseout="this.style.background=''">📄 匯出清理後文字</div>
+            <div onclick="exportClean()" id="exportCleanBtn" style="padding:10px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid #2e2e38" onmouseover="this.style.background='#222228'" onmouseout="this.style.background=''">📄 匯出清理後文字</div>
             <div onclick="exportDiff()" style="padding:10px 14px;cursor:pointer;font-size:13px" onmouseover="this.style.background='#222228'" onmouseout="this.style.background=''">📊 匯出修改前後對照</div>
           </div>
         </div>
@@ -739,6 +739,12 @@ function exportResult() { exportClean(); }
 
 function toggleExportMenu() {
   const m = document.getElementById('exportMenu');
+  const btn = document.getElementById('exportCleanBtn');
+  if (srtMode && lines.some(l => l.srtNum)) {
+    btn.textContent = '📄 匯出 SRT 字幕檔（保留時間軸）';
+  } else {
+    btn.textContent = '📄 匯出純文字 TXT';
+  }
   m.style.display = m.style.display === 'none' ? 'block' : 'none';
 }
 document.addEventListener('click', e => {
