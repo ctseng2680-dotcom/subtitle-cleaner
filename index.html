@@ -340,7 +340,7 @@
 
 <header>
   <div class="logo">✂</div>
-  <h1>字幕清理工具 - 測試版本確認中</h1>
+  <h1>字幕清理工具</h1>
   <p>貼上文字 → 自動清理 → 手動審閱 → 匯出</p>
 </header>
 
@@ -464,18 +464,29 @@ const UNDERSTAND_PATTERNS = [
 // SRT parser
 let srtMode = false;
 
+// 移除 HTML 標籤（如 <font size="24"><font color="#ffffff">...</font></font>）
+function stripHtmlTags(text) {
+  return text.replace(/<[^>]*>/g, '').trim();
+}
+
+// 清除 UTF-16 產生的多餘 null 字元與零寬字元
+function cleanEncoding(text) {
+  return text.replace(/\u0000/g, '').replace(/[\uFEFF\u200B]/g, '');
+}
+
 function parseSRT(text) {
-  // 正規化換行符號，確保 \r\n 轉為 \n
-  const normalized = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').trim();
+  // 清除編碼問題與正規化換行符號
+  const normalized = cleanEncoding(text).replace(/\r\n/g, '\n').replace(/\r/g, '\n').trim();
   const blocks = normalized.split(/\n\n+/);
   const result = [];
   for (const b of blocks) {
     const ls = b.split('\n');
     if (ls.length >= 2 && /^\d+$/.test(ls[0].trim()) && ls[1].includes('-->')) {
+      const rawText = ls.length >= 3 ? ls.slice(2).join('\n').trim() : '';
       result.push({
         srtNum: ls[0].trim(),
         srtTime: ls[1].trim(),
-        text: ls.length >= 3 ? ls.slice(2).join('\n').trim() : ''
+        text: stripHtmlTags(rawText)
       });
     }
     // 跳過無法辨識的區塊，繼續解析後續字幕
@@ -484,13 +495,13 @@ function parseSRT(text) {
 }
 
 function parseInput(text) {
-  const normalized = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').trim();
+  const normalized = cleanEncoding(text).replace(/\r\n/g, '\n').replace(/\r/g, '\n').trim();
   if (/^\d+\s*\n\d{2}:\d{2}/.test(normalized)) {
     srtMode = true;
     return parseSRT(text);
   }
   srtMode = false;
-  return normalized.split('\n').map(l => l.trim()).filter(Boolean).map(t => ({ srtNum: null, srtTime: null, text: t }));
+  return normalized.split('\n').map(l => l.trim()).filter(Boolean).map(t => ({ srtNum: null, srtTime: null, text: stripHtmlTags(t) }));
 }
 
 // ── Rule application ──
