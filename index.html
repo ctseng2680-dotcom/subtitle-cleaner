@@ -588,13 +588,14 @@ async function runProcess() {
       deleted: false,
       flagged,
       flagReason: isUnderstand ? '確認理解' : isParticle ? '語氣詞' : '',
-      edited: l !== current
+      edited: item.text !== current
     };
   });
 
   renderLines();
 
-  if (document.getElementById('useAI').checked) {
+  const useAIEl = document.getElementById('useAI');
+  if (useAIEl && useAIEl.checked) {
     await runAI();
   }
 }
