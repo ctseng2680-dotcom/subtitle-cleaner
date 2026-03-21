@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
@@ -23,319 +22,318 @@
     --radius: 8px;
   }
 
-- { box-sizing: border-box; margin: 0; padding: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-body {
-font-family: ‘Noto Sans TC’, sans-serif;
-background: #0f0f11;
-color: #e8e8f0;
-min-height: 100vh;
-display: flex;
-flex-direction: column;
-}
+  body {
+    font-family: 'Noto Sans TC', sans-serif;
+    background: #0f0f11;
+    color: #e8e8f0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
 
-header {
-padding: 20px 32px;
-border-bottom: 1px solid #2e2e38;
-display: flex;
-align-items: center;
-gap: 12px;
-background: #18181c;
-}
+  header {
+    padding: 20px 32px;
+    border-bottom: 1px solid #2e2e38;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #18181c;
+  }
 
-header .logo {
-width: 32px; height: 32px;
-background: #7c6af7;
-border-radius: 8px;
-display: flex; align-items: center; justify-content: center;
-font-size: 18px;
-}
+  header .logo {
+    width: 32px; height: 32px;
+    background: #7c6af7;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
 
-header h1 { font-size: 18px; font-weight: 600; letter-spacing: -0.3px; }
-header p { font-size: 13px; color: #6b6b80; margin-left: auto; }
+  header h1 { font-size: 18px; font-weight: 600; letter-spacing: -0.3px; }
+  header p { font-size: 13px; color: #6b6b80; margin-left: auto; }
 
-.main {
-display: grid;
-grid-template-columns: 320px 1fr;
-gap: 0;
-flex: 1;
-overflow: hidden;
-}
+  .main {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 0;
+    flex: 1;
+    overflow: hidden;
+  }
 
-@media (max-width: 700px) {
-.main {
-grid-template-columns: 1fr;
-grid-template-rows: auto 1fr;
-overflow: visible;
-height: auto;
-}
-.panel-left {
-border-right: none;
-border-bottom: 1px solid #2e2e38;
-overflow-y: visible;
-max-height: none;
-}
-.panel-right {
-height: 80vh;
-}
-header p { display: none; }
-}
+  @media (max-width: 700px) {
+    .main {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto 1fr;
+      overflow: visible;
+      height: auto;
+    }
+    .panel-left {
+      border-right: none;
+      border-bottom: 1px solid #2e2e38;
+      overflow-y: visible;
+      max-height: none;
+    }
+    .panel-right {
+      height: 80vh;
+    }
+    header p { display: none; }
+  }
 
-/* ── Left panel ── */
-.panel-left {
-border-right: 1px solid #2e2e38;
-display: flex;
-flex-direction: column;
-overflow-y: auto;
-background: #18181c;
-}
+  /* ── Left panel ── */
+  .panel-left {
+    border-right: 1px solid #2e2e38;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    background: #18181c;
+  }
 
-.section {
-padding: 20px;
-border-bottom: 1px solid #2e2e38;
-}
+  .section {
+    padding: 20px;
+    border-bottom: 1px solid #2e2e38;
+  }
 
-.section-title {
-font-size: 11px;
-font-weight: 600;
-letter-spacing: 1.2px;
-text-transform: uppercase;
-color: #6b6b80;
-margin-bottom: 14px;
-}
+  .section-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: #6b6b80;
+    margin-bottom: 14px;
+  }
 
-textarea {
-width: 100%;
-background: #222228;
-border: 1px solid #2e2e38;
-border-radius: 8px;
-color: #e8e8f0;
-font-family: ‘JetBrains Mono’, monospace;
-font-size: 12px;
-padding: 10px;
-resize: vertical;
-outline: none;
-transition: border-color 0.2s;
-line-height: 1.6;
-}
-textarea:focus { border-color: #7c6af7; }
-textarea::placeholder { color: #6b6b80; }
+  textarea {
+    width: 100%;
+    background: #222228;
+    border: 1px solid #2e2e38;
+    border-radius: 8px;
+    color: #e8e8f0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    padding: 10px;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s;
+    line-height: 1.6;
+  }
+  textarea:focus { border-color: #7c6af7; }
+  textarea::placeholder { color: #6b6b80; }
 
-label {
-display: flex;
-align-items: center;
-gap: 8px;
-font-size: 13px;
-color: #e8e8f0;
-cursor: pointer;
-margin-bottom: 10px;
-user-select: none;
-}
-label input[type=checkbox] { accent-color: #7c6af7; width: 15px; height: 15px; }
+  label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #e8e8f0;
+    cursor: pointer;
+    margin-bottom: 10px;
+    user-select: none;
+  }
+  label input[type=checkbox] { accent-color: #7c6af7; width: 15px; height: 15px; }
 
-.rule-item {
-background: #222228;
-border: 1px solid #2e2e38;
-border-radius: 8px;
-padding: 10px 12px;
-margin-bottom: 8px;
-display: flex;
-align-items: center;
-gap: 8px;
-font-size: 12px;
-}
-.rule-item span { flex: 1; }
-.rule-item .del { color: #6b6b80; cursor: pointer; font-size: 16px; line-height: 1; }
-.rule-item .del:hover { color: #ef4444; }
-.rule-row { display: flex; gap: 4px; margin-top: 8px; align-items: center; }
-.rule-row input {
-flex: 1;
-min-width: 0;
-background: #222228;
-border: 1px solid #2e2e38;
-border-radius: 8px;
-color: #e8e8f0;
-padding: 6px 8px;
-font-size: 11px;
-outline: none;
-}
-.rule-row input:focus { border-color: #7c6af7; }
+  .rule-item {
+    background: #222228;
+    border: 1px solid #2e2e38;
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+  }
+  .rule-item span { flex: 1; }
+  .rule-item .del { color: #6b6b80; cursor: pointer; font-size: 16px; line-height: 1; }
+  .rule-item .del:hover { color: #ef4444; }
+  .rule-row { display: flex; gap: 4px; margin-top: 8px; align-items: center; }
+  .rule-row input {
+    flex: 1;
+    min-width: 0;
+    background: #222228;
+    border: 1px solid #2e2e38;
+    border-radius: 8px;
+    color: #e8e8f0;
+    padding: 6px 8px;
+    font-size: 11px;
+    outline: none;
+  }
+  .rule-row input:focus { border-color: #7c6af7; }
 
-button {
-font-family: ‘Noto Sans TC’, sans-serif;
-font-size: 13px;
-font-weight: 500;
-cursor: pointer;
-border: none;
-border-radius: 8px;
-padding: 8px 16px;
-transition: opacity 0.15s, transform 0.1s;
-}
-button:active { transform: scale(0.97); }
-button:hover { opacity: 0.85; }
+  button {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    transition: opacity 0.15s, transform 0.1s;
+  }
+  button:active { transform: scale(0.97); }
+  button:hover { opacity: 0.85; }
 
-.btn-primary { background: #7c6af7; color: #fff; }
-.btn-sm { padding: 5px 10px; font-size: 12px; background: #222228; color: #e8e8f0; border: 1px solid #2e2e38; }
-.btn-success { background: #10b981; color: #fff; }
-.btn-warn { background: #f59e0b; color: #000; }
+  .btn-primary { background: #7c6af7; color: #fff; }
+  .btn-sm { padding: 5px 10px; font-size: 12px; background: #222228; color: #e8e8f0; border: 1px solid #2e2e38; }
+  .btn-success { background: #10b981; color: #fff; }
+  .btn-warn { background: #f59e0b; color: #000; }
 
-.run-row {
-padding: 16px 20px;
-display: flex;
-gap: 8px;
-background: #18181c;
-border-top: 1px solid #2e2e38;
-flex-wrap: wrap;
-}
+  .run-row {
+    padding: 16px 20px;
+    display: flex;
+    gap: 8px;
+    background: #18181c;
+    border-top: 1px solid #2e2e38;
+    flex-wrap: wrap;
+  }
 
-/* ── Right panel ── */
-.panel-right {
-display: flex;
-flex-direction: column;
-overflow: hidden;
-}
+  /* ── Right panel ── */
+  .panel-right {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
 
-.toolbar {
-padding: 12px 20px;
-background: #18181c;
-border-bottom: 1px solid #2e2e38;
-display: flex;
-align-items: center;
-gap: 10px;
-flex-wrap: wrap;
-}
+  .toolbar {
+    padding: 12px 20px;
+    background: #18181c;
+    border-bottom: 1px solid #2e2e38;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
 
-.stats { font-size: 12px; color: #6b6b80; margin-left: auto; }
-.stats span { color: #e8e8f0; font-weight: 600; }
+  .stats { font-size: 12px; color: #6b6b80; margin-left: auto; }
+  .stats span { color: #e8e8f0; font-weight: 600; }
 
-.lines-container {
-flex: 1;
-overflow-y: auto;
-padding: 16px 20px;
-}
+  .lines-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 20px;
+  }
 
-.line-item {
-display: flex;
-gap: 10px;
-align-items: flex-start;
-padding: 10px 12px;
-border-radius: 8px;
-margin-bottom: 6px;
-border: 1px solid transparent;
-transition: border-color 0.15s, background 0.15s;
-position: relative;
-}
-.line-item:hover { border-color: #2e2e38; background: #18181c; }
+  .line-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 10px 12px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    border: 1px solid transparent;
+    transition: border-color 0.15s, background 0.15s;
+    position: relative;
+  }
+  .line-item:hover { border-color: #2e2e38; background: #18181c; }
 
-.line-item.flagged {
-background: rgba(245,158,11,0.07);
-border-color: rgba(245,158,11,0.3);
-}
-.line-item.deleted {
-background: rgba(239,68,68,0.05);
-border-color: rgba(239,68,68,0.2);
-opacity: 0.5;
-}
-.line-item.deleted .line-text { text-decoration: line-through; color: #6b6b80; }
+  .line-item.flagged {
+    background: rgba(245,158,11,0.07);
+    border-color: rgba(245,158,11,0.3);
+  }
+  .line-item.deleted {
+    background: rgba(239,68,68,0.05);
+    border-color: rgba(239,68,68,0.2);
+    opacity: 0.5;
+  }
+  .line-item.deleted .line-text { text-decoration: line-through; color: #6b6b80; }
 
-.line-num {
-font-family: ‘JetBrains Mono’, monospace;
-font-size: 11px;
-color: #6b6b80;
-min-width: 30px;
-padding-top: 2px;
-}
+  .line-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: #6b6b80;
+    min-width: 30px;
+    padding-top: 2px;
+  }
 
-.line-text {
-flex: 1;
-font-size: 14px;
-line-height: 1.6;
-word-break: break-all;
-}
+  .line-text {
+    flex: 1;
+    font-size: 14px;
+    line-height: 1.6;
+    word-break: break-all;
+  }
 
-.flag-badge {
-font-size: 10px;
-font-weight: 600;
-padding: 2px 6px;
-border-radius: 4px;
-background: rgba(245,158,11,0.2);
-color: #f59e0b;
-letter-spacing: 0.5px;
-white-space: nowrap;
-}
+  .flag-badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(245,158,11,0.2);
+    color: #f59e0b;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
 
-.line-actions {
-display: flex;
-gap: 4px;
-flex-shrink: 0;
-padding-top: 2px;
-}
-.act-btn {
-font-size: 16px;
-width: 28px; height: 28px;
-display: flex; align-items: center; justify-content: center;
-border-radius: 6px;
-cursor: pointer;
-border: 1px solid #2e2e38;
-background: #222228;
-transition: background 0.15s;
-}
-.act-btn:hover { background: #2e2e38; }
+  .line-actions {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+    padding-top: 2px;
+  }
+  .act-btn {
+    font-size: 16px;
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 1px solid #2e2e38;
+    background: #222228;
+    transition: background 0.15s;
+  }
+  .act-btn:hover { background: #2e2e38; }
 
-.edit-input {
-flex: 1;
-background: #222228;
-border: 1px solid #7c6af7;
-border-radius: 6px;
-color: #e8e8f0;
-font-size: 14px;
-padding: 4px 8px;
-outline: none;
-}
+  .edit-input {
+    flex: 1;
+    background: #222228;
+    border: 1px solid #7c6af7;
+    border-radius: 6px;
+    color: #e8e8f0;
+    font-size: 14px;
+    padding: 4px 8px;
+    outline: none;
+  }
 
-.empty-state {
-text-align: center;
-padding: 80px 20px;
-color: #6b6b80;
-}
-.empty-state .icon { font-size: 48px; margin-bottom: 16px; }
-.empty-state p { font-size: 14px; line-height: 1.8; }
+  .empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: #6b6b80;
+  }
+  .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
+  .empty-state p { font-size: 14px; line-height: 1.8; }
 
-.ai-loading {
-display: flex; align-items: center; gap: 8px;
-font-size: 13px; color: #a78bfa;
-padding: 8px 12px;
-background: rgba(124,106,247,0.08);
-border-radius: 8px;
-border: 1px solid rgba(124,106,247,0.2);
-}
-.spinner {
-width: 14px; height: 14px;
-border: 2px solid rgba(124,106,247,0.3);
-border-top-color: #7c6af7;
-border-radius: 50%;
-animation: spin 0.7s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
+  .ai-loading {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; color: #a78bfa;
+    padding: 8px 12px;
+    background: rgba(124,106,247,0.08);
+    border-radius: 8px;
+    border: 1px solid rgba(124,106,247,0.2);
+  }
+  .spinner {
+    width: 14px; height: 14px;
+    border: 2px solid rgba(124,106,247,0.3);
+    border-top-color: #7c6af7;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
-.diff-view { font-size: 11px; color: #6b6b80; margin-top: 2px; }
-.diff-view del { color: #ef4444; text-decoration: line-through; }
-.diff-view ins { color: #10b981; text-decoration: none; }
+  .diff-view { font-size: 11px; color: #6b6b80; margin-top: 2px; }
+  .diff-view del { color: #ef4444; text-decoration: line-through; }
+  .diff-view ins { color: #10b981; text-decoration: none; }
 
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #2e2e38; border-radius: 3px; }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #2e2e38; border-radius: 3px; }
 
-.notice {
-padding: 8px 12px;
-font-size: 12px;
-border-radius: 8px;
-margin-top: 8px;
-}
-.notice.info { background: rgba(124,106,247,0.1); color: #a78bfa; border: 1px solid rgba(124,106,247,0.2); }
-.notice.warn { background: rgba(245,158,11,0.1); color: #f59e0b; border: 1px solid rgba(245,158,11,0.2); }
+  .notice {
+    padding: 8px 12px;
+    font-size: 12px;
+    border-radius: 8px;
+    margin-top: 8px;
+  }
+  .notice.info { background: rgba(124,106,247,0.1); color: #a78bfa; border: 1px solid rgba(124,106,247,0.2); }
+  .notice.warn { background: rgba(245,158,11,0.1); color: #f59e0b; border: 1px solid rgba(245,158,11,0.2); }
 </style>
-
 </head>
 <body>
 
@@ -349,46 +347,42 @@ margin-top: 8px;
   <!-- LEFT PANEL -->
   <div class="panel-left">
 
-```
-<div class="section">
-  <div class="section-title">輸入文字</div>
-  <textarea id="inputText" rows="7" placeholder="貼上字幕文字，每行一句。&#10;也支援 SRT 格式。"></textarea>
-  <div class="notice info" style="margin-top:8px">支援純文字（每行一句）或 SRT 格式</div>
-</div>
+    <div class="section">
+      <div class="section-title">輸入文字</div>
+      <textarea id="inputText" rows="7" placeholder="貼上字幕文字，每行一句。&#10;也支援 SRT 格式。"></textarea>
+      <div class="notice info" style="margin-top:8px">支援純文字（每行一句）或 SRT 格式</div>
+    </div>
 
-<div class="section">
-  <div class="section-title">自動規則</div>
-  <label><input type="checkbox" id="r_particles" checked>拿掉語助詞（嗯、啊、哦、呢⋯）</label>
-  <label><input type="checkbox" id="r_understand" checked>標記「確認理解」類語句</label>
-  <label><input type="checkbox" id="r_repeat" checked>移除重複詞語（如「那個那個」）</label>
-  <label><input type="checkbox" id="r_trim" checked>處理首尾空白與多餘換行</label>
-</div>
+    <div class="section">
+      <div class="section-title">自動規則</div>
+      <label><input type="checkbox" id="r_particles" checked>拿掉語助詞（嗯、啊、哦、呢⋯）</label>
+      <label><input type="checkbox" id="r_understand" checked>標記「確認理解」類語句</label>
+      <label><input type="checkbox" id="r_repeat" checked>移除重複詞語（如「那個那個」）</label>
+      <label><input type="checkbox" id="r_trim" checked>處理首尾空白與多餘換行</label>
+    </div>
 
-<div class="section">
-  <div class="section-title">自訂取代規則</div>
-  <div id="customRules"></div>
-  <div class="rule-row">
-    <input id="ruleFrom" placeholder="原文">
-    <input id="ruleTo" placeholder="取代為">
-    <button class="btn-sm" onclick="addRule()">＋</button>
-  </div>
-  <div style="display:flex;gap:6px;margin-top:10px">
-    <button class="btn-sm" onclick="saveRules()" style="flex:1">💾 儲存規則</button>
-    <button class="btn-sm" onclick="document.getElementById('rulesFile').click()" style="flex:1">📂 載入規則</button>
-    <input type="file" id="rulesFile" accept=".json" style="display:none" onchange="loadRules(event)">
-  </div>
-</div>
+    <div class="section">
+      <div class="section-title">自訂取代規則</div>
+      <div id="customRules"></div>
+      <div class="rule-row">
+        <input id="ruleFrom" placeholder="原文">
+        <input id="ruleTo" placeholder="取代為">
+        <button class="btn-sm" onclick="addRule()">＋</button>
+      </div>
+      <div style="display:flex;gap:6px;margin-top:10px">
+        <button class="btn-sm" onclick="saveRules()" style="flex:1">💾 儲存規則</button>
+        <button class="btn-sm" onclick="document.getElementById('rulesFile').click()" style="flex:1">📂 載入規則</button>
+        <input type="file" id="rulesFile" accept=".json" style="display:none" onchange="loadRules(event)">
+      </div>
+    </div>
 
 
-<div class="run-row">
-  <button class="btn-primary" onclick="runProcess()" style="flex:1">▶ 開始掃描</button>
-</div>
-```
-
+    <div class="run-row">
+      <button class="btn-primary" onclick="runProcess()" style="flex:1">▶ 開始掃描</button>
+    </div>
   </div>
 
   <!-- RIGHT PANEL -->
-
   <div class="panel-right">
     <div class="toolbar">
       <div style="display:flex;gap:6px;align-items:center">
@@ -467,16 +461,21 @@ const UNDERSTAND_PATTERNS = [
 ];
 
 // SRT parser
+let srtMode = false;
+
 function parseSRT(text) {
   const blocks = text.trim().split(/\n\n+/);
   const result = [];
   for (const b of blocks) {
-    const lines = b.split('\n');
-    if (lines.length >= 3 && /^\d+$/.test(lines[0].trim()) && lines[1].includes('-->')) {
-      // preserve internal newlines within a subtitle block
-      result.push(lines.slice(2).join('\n').trim());
+    const ls = b.split('\n');
+    if (ls.length >= 3 && /^\d+$/.test(ls[0].trim()) && ls[1].includes('-->')) {
+      result.push({
+        srtNum: ls[0].trim(),
+        srtTime: ls[1].trim(),
+        text: ls.slice(2).join('\n').trim()
+      });
     } else {
-      result.push(...b.split('\n').map(l => l.trim()).filter(Boolean));
+      result.push(...b.split('\n').map(l => l.trim()).filter(Boolean).map(t => ({ srtNum: null, srtTime: null, text: t })));
       break;
     }
   }
@@ -485,9 +484,11 @@ function parseSRT(text) {
 
 function parseInput(text) {
   if (/^\d+\s*\n\d{2}:\d{2}/.test(text.trim())) {
+    srtMode = true;
     return parseSRT(text);
   }
-  return text.split('\n').map(l => l.trim()).filter(Boolean);
+  srtMode = false;
+  return text.split('\n').map(l => l.trim()).filter(Boolean).map(t => ({ srtNum: null, srtTime: null, text: t }));
 }
 
 // ── Rule application ──
@@ -573,15 +574,17 @@ async function runProcess() {
   if (!raw.trim()) return;
 
   const rawLines = parseInput(raw);
-  lines = rawLines.map((l, i) => {
-    const current = applyRules(l);
+  lines = rawLines.map((item, i) => {
+    const current = applyRules(item.text);
     const isUnderstand = checkUnderstand(current);
     const isParticle = checkParticles(current);
     const flagged = isUnderstand || isParticle;
     return {
       id: i,
-      original: l,
+      original: item.text,
       current,
+      srtNum: item.srtNum,
+      srtTime: item.srtTime,
       deleted: false,
       flagged,
       flagReason: isUnderstand ? '確認理解' : isParticle ? '語氣詞' : '',
@@ -745,8 +748,16 @@ document.addEventListener('click', e => {
 
 function exportClean() {
   document.getElementById('exportMenu').style.display = 'none';
-  const result = lines.filter(l => !l.deleted).map(l => l.current).join('\n');
-  download(result, 'cleaned_subtitle.txt');
+  const kept = lines.filter(l => !l.deleted);
+  let result, filename;
+  if (srtMode && kept[0]?.srtNum) {
+    result = kept.map((l, i) => `${i + 1}\n${l.srtTime}\n${l.current}`).join('\n\n');
+    filename = 'cleaned_subtitle.srt';
+  } else {
+    result = kept.map(l => l.current).join('\n');
+    filename = 'cleaned_subtitle.txt';
+  }
+  download(result, filename);
 }
 
 function exportDiff() {
@@ -801,6 +812,5 @@ function clearAll() {
   document.getElementById('stats').textContent = '';
 }
 </script>
-
 </body>
 </html>
