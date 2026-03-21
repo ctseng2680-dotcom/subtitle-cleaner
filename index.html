@@ -796,10 +796,7 @@ function loadRules(e) {
 }
 
 function download(text, filename) {
-  const mimeType = filename.endsWith('.srt')
-    ? 'application/x-subrip;charset=utf-8'
-    : 'text/plain;charset=utf-8';
-  const blob = new Blob(['\uFEFF' + text], { type: mimeType });
+  const blob = new Blob(['\uFEFF' + text], { type: 'application/octet-stream' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = filename;
