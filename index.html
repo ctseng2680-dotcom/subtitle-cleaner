@@ -465,31 +465,32 @@ const UNDERSTAND_PATTERNS = [
 let srtMode = false;
 
 function parseSRT(text) {
-  const blocks = text.trim().split(/\n\n+/);
+  // 正規化換行符號，確保 \r\n 轉為 \n
+  const normalized = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').trim();
+  const blocks = normalized.split(/\n\n+/);
   const result = [];
   for (const b of blocks) {
     const ls = b.split('\n');
-    if (ls.length >= 3 && /^\d+$/.test(ls[0].trim()) && ls[1].includes('-->')) {
+    if (ls.length >= 2 && /^\d+$/.test(ls[0].trim()) && ls[1].includes('-->')) {
       result.push({
         srtNum: ls[0].trim(),
         srtTime: ls[1].trim(),
-        text: ls.slice(2).join('\n').trim()
+        text: ls.length >= 3 ? ls.slice(2).join('\n').trim() : ''
       });
-    } else {
-      result.push(...b.split('\n').map(l => l.trim()).filter(Boolean).map(t => ({ srtNum: null, srtTime: null, text: t })));
-      break;
     }
+    // 跳過無法辨識的區塊，繼續解析後續字幕
   }
   return result;
 }
 
 function parseInput(text) {
-  if (/^\d+\s*\n\d{2}:\d{2}/.test(text.trim())) {
+  const normalized = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').trim();
+  if (/^\d+\s*\n\d{2}:\d{2}/.test(normalized)) {
     srtMode = true;
     return parseSRT(text);
   }
   srtMode = false;
-  return text.split('\n').map(l => l.trim()).filter(Boolean).map(t => ({ srtNum: null, srtTime: null, text: t }));
+  return normalized.split('\n').map(l => l.trim()).filter(Boolean).map(t => ({ srtNum: null, srtTime: null, text: t }));
 }
 
 // ── Rule application ──
@@ -519,16 +520,11 @@ function applyRules(text) {
   }
 
   if (document.getElementById('r_trim').checked) {
-    // Split by newline, trim each line's start/end whitespace, rejoin
-    // This preserves internal newlines (important for SRT multi-line blocks)
-    t = t.split('\n').map(line => line.replace(/^\s+|\s+$/g, '')).join('\n');
-    // Collapse multiple spaces within a line (but not newlines)
-    t = t.replace(/[^\S\n]+/g, ' ');
-    // Trim leading/trailing whitespace and newlines from the whole block
-    t = t.trim();
-  } else {
-    // Always collapse excessive whitespace at minimum
-    t = t.replace(/\s+/g, ' ').trim();
+    // 每一行 trim 頭尾空白，中間多個空白壓成一個
+    t = t.split('\n').map(line => line.replace(/^\s+|\s+$/g, '').replace(/ {2,}/g, ' ')).join('\n');
+    // 移除整個區塊最前端與最後端的空行與空白
+    t = t.replace(/^\n+/, '').replace(/\n+$/, '').trim();
+    // SRT 區塊內部的換行保留不動（不做任何換行合併）
   }
 
   return t;
