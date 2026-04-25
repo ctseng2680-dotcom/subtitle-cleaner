@@ -351,6 +351,10 @@
     <div class="section">
       <div class="section-title">輸入文字</div>
       <textarea id="inputText" rows="7" placeholder="貼上字幕文字，每行一句。&#10;也支援 SRT 格式。"></textarea>
+      <div style="display:flex;gap:6px;margin-top:8px">
+        <button class="btn-sm" onclick="document.getElementById('subtitleFile').click()" style="flex:1">📂 選擇檔案（.txt / .srt）</button>
+        <input type="file" id="subtitleFile" accept=".txt,.srt" style="display:none" onchange="loadSubtitleFile(event)">
+      </div>
       <div class="notice info" style="margin-top:8px">支援純文字（每行一句）或 SRT 格式</div>
     </div>
 
@@ -787,6 +791,23 @@ function exportDiff() {
   });
   const header = `字幕修改對照表\n生成時間：${new Date().toLocaleString('zh-TW')}\n共 ${changed.length} 筆修改\n${'─'.repeat(40)}\n\n`;
   download(header + rows.join('\n'), 'subtitle_diff.txt');
+}
+
+function loadSubtitleFile(e) {
+  const f = e.target.files[0];
+  if (!f) return;
+  const name = f.name.toLowerCase();
+  if (!name.endsWith('.txt') && !name.endsWith('.srt')) {
+    alert('請選擇 .txt 或 .srt 檔案');
+    e.target.value = '';
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = ev => {
+    document.getElementById('inputText').value = ev.target.result;
+  };
+  reader.readAsText(f, 'UTF-8');
+  e.target.value = '';
 }
 
 function saveRules() {
