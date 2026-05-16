@@ -51,6 +51,19 @@
   }
 
   header h1 { font-size: 18px; font-weight: 600; letter-spacing: -0.3px; }
+  header h1 .version {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 400;
+    color: #a78bfa;
+    background: rgba(124,106,247,0.12);
+    border: 1px solid rgba(124,106,247,0.25);
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 6px;
+    letter-spacing: 0;
+    vertical-align: 2px;
+  }
   header p { font-size: 13px; color: #6b6b80; margin-left: auto; }
 
   .main {
@@ -340,7 +353,7 @@
 
 <header>
   <div class="logo">✂</div>
-  <h1>字幕清理工具</h1>
+  <h1>字幕清理工具 <span class="version">v1.1.0</span></h1>
   <p>貼上文字 → 自動清理 → 手動審閱 → 匯出</p>
 </header>
 
