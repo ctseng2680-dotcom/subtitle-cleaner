@@ -424,7 +424,10 @@ let currentFilter = 'all';
 let customRules = [];
 
 // ── Built-in rules ──
-const PARTICLES = /[\s,，]*(嗯+|啊+|哦+|喔+|噢+|唉+|呢|嘛|吧|囉|啦|欸|欸+|哈+|呵+|嗯哼|呃+|額+|那個那個|這個這個)/g;
+// 純語助詞（無語意，可自動移除）：句首、句中、句尾皆處理
+const PARTICLES_SOFT = '嗯+|啊+|哦+|喔+|噢+|唉+|欸+|呃+|額+|哈+|呵+|哇+|哎+|吼+|呦+|呐+|喲+|唷+|呀+|嗯哼';
+// 句尾軟語助詞（語氣較輕，僅句尾移除）
+const PARTICLES_TAIL = '囉+|啦+|唄+';
 const REPEAT_WORD = /(.{1,4})\1{1,}/g;
 
 const UNDERSTAND_PATTERNS = [
@@ -528,10 +531,12 @@ function applyRules(text) {
   }
 
   if (document.getElementById('r_particles').checked) {
-    t = t.replace(/^[\s,，]*(嗯+|啊+|哦+|喔+|噢+|欸+|呃+|額+)[，,\s]*/g, '');
-    t = t.replace(/[，,\s]*(嗯+|啊+|哦+|喔+|噢+|欸+|呃+|額+)[，,\s]*$/g, '');
-    t = t.replace(/[，,\s]*(嗯+|啊+|哦+|喔+|噢+|欸+|呃+|額+)[，,\s]+/g, '，');
-    t = t.replace(/(囉+|啦+)$/g, '');
+    const soft = PARTICLES_SOFT;
+    const tail = PARTICLES_TAIL;
+    t = t.replace(new RegExp(`^[\\s,，]*(${soft})[，,\\s]*`, 'g'), '');
+    t = t.replace(new RegExp(`[，,\\s]*(${soft})[，,\\s]*$`, 'g'), '');
+    t = t.replace(new RegExp(`[，,\\s]*(${soft})[，,\\s]+`, 'g'), '');
+    t = t.replace(new RegExp(`[，,\\s]*(${tail})[，,\\s]*$`, 'g'), '');
   }
 
   if (document.getElementById('r_trim').checked) {
