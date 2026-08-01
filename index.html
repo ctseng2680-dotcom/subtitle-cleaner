@@ -361,7 +361,7 @@
 
 <header>
   <div class="logo">✂</div>
-  <h1>字幕清理工具 <span class="version">v1.2.0</span></h1>
+  <h1>字幕清理工具 <span class="version">v1.3.0</span></h1>
   <p>貼上文字 → 自動清理 → 手動審閱 → 匯出</p>
 </header>
 
@@ -399,6 +399,9 @@
         <button class="btn-sm" onclick="saveRules()" style="flex:1">💾 儲存規則</button>
         <button class="btn-sm" onclick="document.getElementById('rulesFile').click()" style="flex:1">📂 選擇規則檔案(.json)</button>
         <input type="file" id="rulesFile" accept=".json" style="display:none" onchange="loadRules(event)">
+      </div>
+      <div style="margin-top:6px">
+        <button class="btn-sm" onclick="loadCloudRules()" style="width:100%">☁️ 從雲端載入規則</button>
       </div>
     </div>
 
@@ -449,6 +452,9 @@ let customRules = [];
 const PARTICLES_SOFT = '嗯+|啊+|哦+|喔+|噢+|唉+|欸+|呃+|額+|哈+|呵+|哇+|哎+|吼+|呦+|呐+|喲+|唷+|呀+|嗯哼';
 // 句尾軟語助詞（語氣較輕，僅句尾移除）
 const PARTICLES_TAIL = '囉+|啦+|唄+';
+
+// ── 雲端規則（Google Sheets 發布為 CSV） ──
+const CLOUD_RULES_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTlSFEwaQpDL_5E9CLz3nm51ReICP7xI4W2I6M7QNqdbqGrugWje1KCZfCR1_f9ujokWQeHobBQ9CQT/pub?gid=66823827&single=true&output=csv';
 
 const UNDERSTAND_PATTERNS = [
   /理解嗎[？?]?/,
@@ -547,7 +553,12 @@ function applyRules(text) {
 
   // apply custom rules
   for (const r of customRules) {
-    t = t.replaceAll(r.from, r.to);
+    if (r.exact) {
+      // 整行完全比對才套用（例如雲端刪除規則）
+      if (t.trim() === r.from) t = r.to;
+    } else {
+      t = t.replaceAll(r.from, r.to);
+    }
   }
 
   if (document.getElementById('r_particles').checked) {
@@ -592,12 +603,17 @@ function addRule() {
 
 function renderCustomRules() {
   const el = document.getElementById('customRules');
-  el.innerHTML = customRules.map((r, i) => `
+  el.innerHTML = customRules.map((r, i) => {
+    const cloudTag = r.cloud ? '<span style="font-size:10px;color:#a78bfa;margin-right:4px">☁️</span>' : '';
+    const exactTag = r.exact ? '<span style="font-size:10px;color:#f59e0b;margin-left:4px" title="整行完全比對才套用">[整行]</span>' : '';
+    const toDisplay = r.to ? `「${escHtml(r.to)}」` : '<em>刪除</em>';
+    return `
     <div class="rule-item">
-      <span>「${r.from}」→ 「${r.to || '<em>刪除</em>'}」</span>
+      <span>${cloudTag}「${escHtml(r.from)}」→ ${toDisplay}${exactTag}</span>
       <div class="del" onclick="removeRule(${i})">×</div>
     </div>
-  `).join('');
+  `;
+  }).join('');
 }
 
 function removeRule(i) {
@@ -847,6 +863,60 @@ function saveRules() {
   if (!customRules.length) { alert('目前沒有自訂規則可儲存'); return; }
   const data = JSON.stringify({ rules: customRules, savedAt: new Date().toISOString() }, null, 2);
   download(data, 'subtitle_rules.json');
+}
+
+function parseCsv(text) {
+  const rows = [];
+  const lines = text.replace(/\r\n/g, '\n').split('\n');
+  for (const line of lines) {
+    if (!line.trim()) continue;
+    const cells = [];
+    let cur = '', inQuote = false;
+    for (let i = 0; i < line.length; i++) {
+      const c = line[i];
+      if (c === '"') {
+        if (inQuote && line[i + 1] === '"') { cur += '"'; i++; }
+        else inQuote = !inQuote;
+      } else if (c === ',' && !inQuote) {
+        cells.push(cur); cur = '';
+      } else {
+        cur += c;
+      }
+    }
+    cells.push(cur);
+    rows.push(cells.map(s => s.trim()));
+  }
+  return rows;
+}
+
+async function loadCloudRules() {
+  try {
+    const resp = await fetch(CLOUD_RULES_URL, { cache: 'no-store' });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const text = await resp.text();
+    const rows = parseCsv(text);
+    if (rows.length < 2) throw new Error('雲端試算表無資料');
+
+    // 移除舊的雲端規則，保留本機規則
+    customRules = customRules.filter(r => !r.cloud);
+
+    let added = 0;
+    for (let i = 1; i < rows.length; i++) {  // 跳過標題列
+      const [from, to = ''] = rows[i];
+      if (!from) continue;
+      customRules.push({
+        from,
+        to,
+        cloud: true,
+        exact: to === ''  // 空的取代 = 整行完全比對才刪除
+      });
+      added++;
+    }
+    renderCustomRules();
+    alert(`☁️ 已載入 ${added} 條雲端規則`);
+  } catch (e) {
+    alert(`載入雲端規則失敗：${e.message}`);
+  }
 }
 
 function loadRules(e) {
