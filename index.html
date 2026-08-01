@@ -361,7 +361,7 @@
 
 <header>
   <div class="logo">✂</div>
-  <h1>字幕清理工具 <span class="version">v1.3.0</span></h1>
+  <h1>字幕清理工具 <span class="version">v1.4.0</span></h1>
   <p>貼上文字 → 自動清理 → 手動審閱 → 匯出</p>
 </header>
 
@@ -551,14 +551,9 @@ function applyRules(text) {
          .replace(/(其實){2,}/g, '其實');
   }
 
-  // apply custom rules
+  // apply custom rules（to 留空 = 直接把該詞從句中移除，保留前後文）
   for (const r of customRules) {
-    if (r.exact) {
-      // 整行完全比對才套用（例如雲端刪除規則）
-      if (t.trim() === r.from) t = r.to;
-    } else {
-      t = t.replaceAll(r.from, r.to);
-    }
+    t = t.replaceAll(r.from, r.to);
   }
 
   if (document.getElementById('r_particles').checked) {
@@ -605,11 +600,10 @@ function renderCustomRules() {
   const el = document.getElementById('customRules');
   el.innerHTML = customRules.map((r, i) => {
     const cloudTag = r.cloud ? '<span style="font-size:10px;color:#a78bfa;margin-right:4px">☁️</span>' : '';
-    const exactTag = r.exact ? '<span style="font-size:10px;color:#f59e0b;margin-left:4px" title="整行完全比對才套用">[整行]</span>' : '';
     const toDisplay = r.to ? `「${escHtml(r.to)}」` : '<em>刪除</em>';
     return `
     <div class="rule-item">
-      <span>${cloudTag}「${escHtml(r.from)}」→ ${toDisplay}${exactTag}</span>
+      <span>${cloudTag}「${escHtml(r.from)}」→ ${toDisplay}</span>
       <div class="del" onclick="removeRule(${i})">×</div>
     </div>
   `;
@@ -904,12 +898,7 @@ async function loadCloudRules() {
     for (let i = 1; i < rows.length; i++) {  // 跳過標題列
       const [from, to = ''] = rows[i];
       if (!from) continue;
-      customRules.push({
-        from,
-        to,
-        cloud: true,
-        exact: to === ''  // 空的取代 = 整行完全比對才刪除
-      });
+      customRules.push({ from, to, cloud: true });
       added++;
     }
     renderCustomRules();
